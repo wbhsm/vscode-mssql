@@ -1,5 +1,5 @@
-import {RequestType, NotificationType} from 'vscode-languageclient';
-import { IDbColumn, ISelectionData, IResultMessage } from './../interfaces';
+import { RequestType } from 'vscode-languageclient';
+import { ISelectionData } from './../interfaces';
 
 // ------------------------------- < Query Dispose Request > ----------------------------------------
 export namespace QueryDisposeRequest {
@@ -18,39 +18,6 @@ export class QueryDisposeResult {
     messages: string;
 }
 // --------------------------------- </ Query Dispose Request > ----------------------------------------
-
-// -------------------------- < Query Execution Complete Notification > -------------------------------
-export namespace QueryExecuteCompleteNotification {
-    export const type: NotificationType<QueryExecuteCompleteNotificationResult> = {
-                                                                                        get method(): string {
-                                                                                            return 'query/complete';
-                                                                                        }
-                                                                                  };
-}
-
-export class ResultSetSummary {
-    id: number;
-    rowCount: number;
-    columnInfo: IDbColumn[];
-}
-
-export class BatchSummary {
-    hasError: boolean;
-    id: number;
-    selection: ISelectionData;
-    messages: IResultMessage[];
-    resultSetSummaries: ResultSetSummary[];
-    executionElapsed: string;
-    executionEnd: string;
-    executionStart: string;
-}
-
-export class QueryExecuteCompleteNotificationResult {
-    ownerUri: string;
-    batchSummaries: BatchSummary[];
-}
-
-// -------------------------- </ Query Execution Complete Notification > -------------------------------
 
 // --------------------------------- < Query Execution Request > ---------------------------------------
 export namespace QueryExecuteRequest {

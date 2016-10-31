@@ -4,7 +4,8 @@ import QueryRunner from './../src/controllers/QueryRunner';
 import { QueryNotificationHandler } from './../src/controllers/QueryNotificationHandler';
 import { SqlOutputContentProvider } from './../src/models/SqlOutputContentProvider';
 import SqlToolsServerClient from './../src/languageservice/serviceclient';
-import { QueryExecuteParams, QueryExecuteCompleteNotificationResult } from './../src/models/contracts/queryExecute';
+import { QueryExecuteCompleteParams } from './../src/models/contracts/QueryExecuteCompleteNotification';
+import { QueryExecuteParams } from './../src/models/contracts/queryExecute';
 import VscodeWrapper from './../src/controllers/vscodeWrapper';
 import StatusView from './../src/views/statusView';
 import { ISlickRange } from './../src/models/interfaces';
@@ -102,7 +103,7 @@ suite('Query Runner tests', () => {
 
     test('Handles result correctly', () => {
         let resolveRan = false;
-        let result: QueryExecuteCompleteNotificationResult = {
+        let result: QueryExecuteCompleteParams = {
             ownerUri: 'uri',
             batchSummaries: [{
                 hasError: false,
@@ -131,7 +132,7 @@ suite('Query Runner tests', () => {
         queryRunner.dataResolveReject = {resolve: () => {
             resolveRan = true;
         }};
-        queryRunner.handleResult(result);
+        queryRunner.handleQueryComplete(result);
         testStatusView.verify(x => x.executedQuery(TypeMoq.It.isAnyString()), TypeMoq.Times.once());
         assert.equal(resolveRan, true);
     });

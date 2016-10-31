@@ -4,7 +4,7 @@
 */
 import QueryRunner from './QueryRunner';
 import SqlToolsServiceClient from '../languageservice/serviceclient';
-import {QueryExecuteCompleteNotification} from '../models/contracts/queryExecute';
+import {QueryExecuteCompleteEvent, QueryExecuteCompleteParams} from '../models/contracts/QueryExecuteCompleteNotification';
 import {NotificationHandler} from 'vscode-languageclient';
 
 export class QueryNotificationHandler {
@@ -23,7 +23,7 @@ export class QueryNotificationHandler {
 
     // register the handler to handle notifications for queries
     private initialize(): void {
-        SqlToolsServiceClient.instance.onNotification(QueryExecuteCompleteNotification.type, this.handleNotification());
+        SqlToolsServiceClient.instance.onNotification(QueryExecuteCompleteEvent.type, this.handleCompletionNotification());
     }
 
     // registers queryRunners with their uris to distribute notifications
@@ -32,10 +32,11 @@ export class QueryNotificationHandler {
     }
 
     // handles distributing notifications to appropriate
-    private handleNotification(): NotificationHandler<any> {
+    private handleCompletionNotification(): NotificationHandler<QueryExecuteCompleteParams> {
         const self = this;
         return (event) => {
-            self._queryRunners.get(event.ownerUri).handleResult(event);
+            // This is the last event for a query, so we will stop listening after this
+            self._queryRunners.get(event.ownerUri).handleQueryComplete(event);
             self._queryRunners.delete(event.ownerUri);
         };
     }

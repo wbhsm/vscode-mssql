@@ -4,9 +4,10 @@ import StatusView from '../views/statusView';
 import SqlToolsServerClient from '../languageservice/serviceclient';
 import {QueryNotificationHandler} from './QueryNotificationHandler';
 import VscodeWrapper from './vscodeWrapper';
-import { BatchSummary, QueryExecuteParams, QueryExecuteRequest,
-    QueryExecuteCompleteNotificationResult, QueryExecuteSubsetResult,
-    QueryExecuteSubsetParams, QueryDisposeParams, QueryExecuteSubsetRequest,
+import { BatchSummary } from '../models/contracts/QuerySummaries';
+import { QueryExecuteCompleteParams } from '../models/contracts/QueryExecuteCompleteNotification';
+import { QueryExecuteParams, QueryExecuteRequest,
+    QueryExecuteSubsetResult, QueryExecuteSubsetParams, QueryDisposeParams, QueryExecuteSubsetRequest,
     QueryDisposeRequest } from '../models/contracts/queryExecute';
 import { QueryCancelParams, QueryCancelResult, QueryCancelRequest } from '../models/contracts/QueryCancel';
 import { ISlickRange, ISelectionData } from '../models/interfaces';
@@ -145,7 +146,7 @@ export default class QueryRunner {
     }
 
     // handle the result of the notification
-    public handleResult(result: QueryExecuteCompleteNotificationResult): void {
+    public handleQueryComplete(result: QueryExecuteCompleteParams): void {
         this._vscodeWrapper.logToOutputChannel(Utils.formatString(Constants.msgFinishedExecute, this._uri));
         this._isExecuting = false;
         this.batchSets = result.batchSummaries;
