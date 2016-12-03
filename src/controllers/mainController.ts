@@ -109,6 +109,7 @@ export default class MainController implements vscode.Disposable {
         this._vscodeWrapper.onDidCloseTextDocument(params => this.onDidCloseTextDocument(params));
         this._vscodeWrapper.onDidOpenTextDocument(params => this.onDidOpenTextDocument(params));
         this._vscodeWrapper.onDidSaveTextDocument(params => this.onDidSaveTextDocument(params));
+        this._vscodeWrapper.onDidChangeConfiguration(() => this.onDidChangeConfiguration());
 
         return this.initialize(activationTimer);
     }
@@ -402,6 +403,13 @@ export default class MainController implements vscode.Disposable {
             this._connectionMgr.onDidCloseTextDocument(doc);
             this._outputContentProvider.onDidCloseTextDocument(doc);
         }
+    }
+
+    /**
+     * Called by VS Code when a configuration option is closed
+     */
+    private onDidChangeConfiguration(): void {
+        this._outputContentProvider.onDidChangeConfiguration();
     }
 
     /**

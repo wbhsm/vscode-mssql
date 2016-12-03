@@ -383,6 +383,23 @@ export class SqlOutputContentProvider implements vscode.TextDocumentContentProvi
         }
     }
 
+    /**
+     * Executed from the MainController when a configuration option is changed
+     */
+    public onDidChangeConfiguration(): void {
+        let data = {};
+        let mssqlConfig = this._vscodeWrapper.getConfiguration(Constants.extensionName);
+        let editorConfig = this._vscodeWrapper.getConfiguration('editor');
+        let extensionFontFamily = mssqlConfig.get<string>(Constants.extConfigResultFontFamily).split('\'').join('').split('"').join('');
+        let extensionFontSize = mssqlConfig.get<number>(Constants.extConfigResultFontSize);
+        data['FontFamily'] = extensionFontFamily ?
+                            extensionFontFamily :
+                            editorConfig.get<string>('fontFamily').split('\'').join('').split('"').join('');
+        data['FontSize'] = extensionFontSize ? extensionFontSize + 'px' : editorConfig.get<number>('fontSize') + 'px';
+        data['FontWeight'] = editorConfig.get<string>('fontWeight');
+        this._service.broadcast(true, 'style', data);
+    }
+
     private setRunnerDeletionTimeout(uri: string): number {
         const self = this;
         return setTimeout(() => {

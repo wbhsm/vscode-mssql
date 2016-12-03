@@ -81,30 +81,41 @@ export default class LocalWebService {
         return this.serviceUrl + '/' + Interfaces.ContentTypes[type];
     }
 
-    broadcast(uri: string, event: string, data?: any): void {
+    broadcast(uri: string | boolean, event: string, data?: any): void {
         // Create a message to send out
         let message: WebSocketMessage = {
             type: event,
             data: data ? data : undefined
         };
 
-        // Attempt to find the web socket server
-        let mapping = this.wsMap.get(uri);
+        if (uri === true) {
+            this.wsMap.forEach((map) => {
+                if (map.webSocketServer.readyState === ws.OPEN) {
+                    map.webSocketServer.send(JSON.stringify(message));
+                }
 
-        // Is the URI mapped to a web socket server?
-        if (mapping === undefined) {
-            // There isn't a mapping, so create it
-            mapping = new WebSocketMapping();
-            this.wsMap.set(uri, mapping);
+                // Append the message to the message history
+                map.pendingMessages.push(message);
+            });
         } else {
-            // Make sure the web socket server is open, then fire away
-            if (mapping.webSocketServer.readyState === ws.OPEN) {
-                mapping.webSocketServer.send(JSON.stringify(message));
-            }
-        }
+            // Attempt to find the web socket server
+            let mapping = this.wsMap.get(<string> uri);
 
-        // Append the message to the message history
-        mapping.pendingMessages.push(message);
+            // Is the URI mapped to a web socket server?
+            if (mapping === undefined) {
+                // There isn't a mapping, so create it
+                mapping = new WebSocketMapping();
+                this.wsMap.set(<string> uri, mapping);
+            } else {
+                // Make sure the web socket server is open, then fire away
+                if (mapping.webSocketServer.readyState === ws.OPEN) {
+                    mapping.webSocketServer.send(JSON.stringify(message));
+                }
+            }
+
+            // Append the message to the message history
+            mapping.pendingMessages.push(message);
+        }
     }
 
     /**

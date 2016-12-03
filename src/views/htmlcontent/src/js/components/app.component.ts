@@ -316,6 +316,14 @@ export class AppComponent implements OnInit, AfterViewChecked {
                     self.complete = true;
                     self.messagesAdded = true;
                 break;
+                case 'style':
+                    let styles = event.data;
+                    this.createNewCssClass(':root', {
+                        '--font-family': styles.FontFamily,
+                        '--font-weight': styles.FontWeight,
+                        '--font-size': styles.FontSize
+                    });
+                break;
                 case 'batch':
                     let batch = event.data;
 
@@ -638,7 +646,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
             }
             self.slickgrids.toArray()[0].setActive();
         });
-}
+    }
 
     /**
      *
@@ -706,4 +714,18 @@ export class AppComponent implements OnInit, AfterViewChecked {
                 }
         });
     }
+
+    createNewCssClass(className: string, attributes: any): void {
+        let styleEl = document.createElement('style');
+        styleEl.innerText += className + ' {';
+        for (let attribute in attributes) {
+             if (attributes.hasOwnProperty(attribute)) {
+                styleEl.innerText += `${attribute}: ${attributes[attribute]};`;
+             }
+        }
+        styleEl.innerText += '}';
+        let header = document.getElementsByTagName('head').item(0);
+        header.appendChild(styleEl);
+    }
+
 }
