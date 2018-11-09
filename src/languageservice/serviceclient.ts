@@ -322,9 +322,12 @@ export default class SqlToolsServiceClient {
         let config = workspace.getConfiguration(Constants.extensionConfigSectionName);
         if (config) {
             // Enable diagnostic logging in the service if it is configured
+            serverArgs.push('--tracing-level');
             let logDebugInfo = config[Constants.configLogDebugInfo];
             if (logDebugInfo) {
-                serverArgs.push('--enable-logging');
+                serverArgs.push('Information');
+            } else {
+                serverArgs.push('Off');
             }
 
             // Send Locale for sqltoolsservice localization
