@@ -384,4 +384,4 @@ This extension is [licensed under the MIT License]. Please see the [third-party 
 [Code of Conduct FAQ]:https://opensource.microsoft.com/codeofconduct/faq/
 [opencode@microsoft.com]:mailto:opencode@microsoft.com
 [#669]:https://github.com/Microsoft/vscode-mssql/issues/669
-
+#1
